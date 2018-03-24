@@ -5,13 +5,13 @@ var configuration = require('../../knexfile')[environment]
 var database      = require('knex')(configuration)
 pry = require('pryjs')
 
-function getmeals(id){
-    eval(pry.it)
-  database.raw(
-    'SELECT * FROM meals WHERE id=?',
-    [id]
-  )
-}
+// function getmeals(id){
+//     eval(pry.it)
+//   database.raw(
+//     'SELECT * FROM meals WHERE id=?',
+//     [id]
+//   )
+// }
 
 router.get('/:id/foods', function(req, res, next) {
     var id = req.params.id
@@ -60,14 +60,21 @@ router.get('/:id/foods', function(req, res, next) {
 
 
 router.get('/', function(req, res, next) {
-    database.raw(
-      'SELECT * FROM meals'
-    ).then(function(meal) {
-      if(!meal.rows) {
-        return res.sendStatus(404)
-      } else {
-        res.json(meal.rows)
-      }
+    return database.raw('SELECT * FROM meals;')
+    .then((meals) => {
+      return Promise.all(
+        meals.rows.map(function(meal) {
+          let id = meal.id
+          return database.raw('SELECT meals.id, meals.name, foods.* from meals join mealfoods ON meals.id = mealfoods.meal_id join foods on foods.id = mealfoods.food_id WHERE meals.id = ?;', [id])
+          .then(foods => {
+            let mealWithFoods = {id: meal.id, name: meal.name, foods: foods.rows}
+            return mealWithFoods
+          })
+        })
+      )
+      .then(allmeals => {
+        res.status(201).json(allmeals)
+    })
     })
   })
 
