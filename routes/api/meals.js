@@ -38,7 +38,7 @@ router.get('/:id/foods', function(req, res, next) {
         if(!meals.rows) {
             return res.sendStatus(404)
         } else {
-        res.json(getmeals(id))
+        res.json(meals)
       }
     })
   })
@@ -52,7 +52,6 @@ router.get('/:id/foods', function(req, res, next) {
             return res.sendStatus(404)
         } else {
         
-         eval(pry.it)    
         res.json(meals.rows)
       }
     })
