@@ -5,13 +5,13 @@ var configuration = require('../../knexfile')[environment]
 var database      = require('knex')(configuration)
 pry = require('pryjs')
 
-// function getmeals(id){
-//   var id = id
-//   database.raw(
-//     'SELECT * FROM meals WHERE id=?',
-//     [id]
-//   )
-// }
+function getmeals(id){
+    eval(pry.it)
+  database.raw(
+    'SELECT * FROM meals WHERE id=?',
+    [id]
+  )
+}
 
 router.get('/:id/foods', function(req, res, next) {
     var id = req.params.id
@@ -28,16 +28,17 @@ router.get('/:id/foods', function(req, res, next) {
   })
 
   router.post('/:meal_id/foods/:food_id', function(req, res, next) {
+    var id = req.params.id
+    var outer = {}
     var meal_id = req.params.meal_id
     var food_id = req.params.food_id
-    var id = req.params.id
     database.raw('INSERT INTO mealfoods (meal_id, food_id) VALUES (?,?) RETURNING *',
     [meal_id,food_id])
     .then(function(meals) {
         if(!meals.rows) {
             return res.sendStatus(404)
         } else {
-        res.json(meals)
+        res.json(getmeals(id))
       }
     })
   })
