@@ -50,9 +50,8 @@ router.get('/:id/foods', function(req, res, next) {
         if(!meals.rows) {
             return res.sendStatus(404)
         } else {
-        
-        res.json(meals.rows)
-      }
+            res.send('meal updated')
+        }
     })
   })
 
@@ -94,7 +93,7 @@ router.post('/', function(req, res, next) {
 })
 
 
-router.delete('/:id', function(req, res, next) {
+router.delete('/foods/:id', function(req, res, next) {
     var id = req.params.id
     database.raw(
       'DELETE FROM meals WHERE id=?',
