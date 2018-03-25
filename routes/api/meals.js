@@ -93,29 +93,40 @@ router.post('/', function(req, res, next) {
 })
 
 
-router.delete('/foods/:id', function(req, res, next) {
-    var id = req.params.id
-    database.raw(
-      'DELETE FROM meals WHERE id=?',
-      [id]
+router.delete('/:meal_id/foods/:food_id', function(req, res, next) {
+    var meal_id = req.params.meal_id
+    var food_id = req.params.food_id
+     database.raw('DELETE FROM mealfoods WHERE mealfoods.meal_id = ? AND mealfoods.food_id = ? ',
+      [meal_id,food_id]
     ).then(function(food){
-         res.send('meal deleted')
+         res.send('meal food deleted')
     })
   })
 
+// router.delete('/:id', function(req, res, next) {
+//     var id = req.params.id
+//     eval(pry.it)
+//     database.raw(
+//       'DELETE FROM foods WHERE id=?',
+//       [id]
+//     ).then(function(food){
+//          res.send('Food deleted')
+//     })
+//   })
 
-  router.put('/:id', function(req, res, next) {
-    var id = req.params.id
-    var name = req.body.name
-    var calories = req.body.calories
 
-    database('foods')
-    .where('id', '=', id)
-    .update({
-    name: name
-    }).then(function(food){
-        res.send('meal updated')
-   })
-  })
+//   router.put('/:id', function(req, res, next) {
+//     var id = req.params.id
+//     var name = req.body.name
+//     var calories = req.body.calories
+
+//     database('foods')
+//     .where('id', '=', id)
+//     .update({
+//     name: name
+//     }).then(function(food){
+//         res.send('meal updated')
+//    })
+//   })
 
 module.exports = router;
