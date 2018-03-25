@@ -29,7 +29,6 @@ router.get('/:id/foods', function(req, res, next) {
 
   router.post('/:meal_id/foods/:food_id', function(req, res, next) {
     var id = req.params.id
-    var outer = {}
     var meal_id = req.params.meal_id
     var food_id = req.params.food_id
     database.raw('INSERT INTO mealfoods (meal_id, food_id) VALUES (?,?) RETURNING *',
@@ -38,7 +37,7 @@ router.get('/:id/foods', function(req, res, next) {
         if(!meals.rows) {
             return res.sendStatus(404)
         } else {
-        res.json(meals)
+        res.json(meals.rows)
       }
     })
   })
