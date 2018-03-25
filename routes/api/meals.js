@@ -5,14 +5,6 @@ var configuration = require('../../knexfile')[environment]
 var database      = require('knex')(configuration)
 pry = require('pryjs')
 
-// function getmeals(id){
-//     eval(pry.it)
-//   database.raw(
-//     'SELECT * FROM meals WHERE id=?',
-//     [id]
-//   )
-// }
-
 router.get('/:id/foods', function(req, res, next) {
     var id = req.params.id
     database.raw(
@@ -27,7 +19,7 @@ router.get('/:id/foods', function(req, res, next) {
     })
   })
 
-  router.post('/:meal_id/foods/:food_id', function(req, res, next) {
+router.post('/:meal_id/foods/:food_id', function(req, res, next) {
     var id = req.params.id
     var meal_id = req.params.meal_id
     var food_id = req.params.food_id
@@ -42,7 +34,7 @@ router.get('/:id/foods', function(req, res, next) {
     })
   })
 
-  router.get('/:meal_id/foods/', function(req, res, next) {
+router.get('/:meal_id/foods/', function(req, res, next) {
     var meal_id = req.params.meal_id
     database.raw('SELECT foods.id, foods. name, foods.calories FROM foods INNER JOIN mealfoods on foods.id= mealfoods.food_id WHERE mealfoods.meal=?',
     [meal_id])
@@ -62,18 +54,17 @@ router.get('/', function(req, res, next) {
       return Promise.all(
         meals.rows.map(function(meal) {
           let id = meal.id
-          return database.raw('SELECT meals.id, meals.name, foods.* from meals join mealfoods ON meals.id = mealfoods.meal_id join foods on foods.id = mealfoods.food_id WHERE meals.id = ?;', [id])
+          return database.raw('SELECT meals.id, meals.name, foods.* from meals JOIN mealfoods ON meals.id = mealfoods.meal_id JOIN foods ON foods.id = mealfoods.food_id WHERE meals.id = ?;', [id])
           .then(foods => {
-            let mealWithFoods = {id: meal.id, name: meal.name, foods: foods.rows}
-            return mealWithFoods
+            return {id: meal.id, name: meal.name, foods: foods.rows}
           })
         })
       )
       .then(allmeals => {
         res.status(201).json(allmeals)
+       })
     })
-    })
-  })
+})
 
 router.post('/', function(req, res, next) {
   var name = req.body.name
@@ -96,37 +87,11 @@ router.post('/', function(req, res, next) {
 router.delete('/:meal_id/foods/:food_id', function(req, res, next) {
     var meal_id = req.params.meal_id
     var food_id = req.params.food_id
-     database.raw('DELETE FROM mealfoods WHERE mealfoods.meal_id = ? AND mealfoods.food_id = ? ',
+     database.raw('DELETE FROM mealfoods WHERE mealfoods.meal_id = ? AND mealfoods.food_id = ?',
       [meal_id,food_id]
     ).then(function(food){
-         res.send('meal food deleted')
+         res.send(food)
     })
-  })
-
-// router.delete('/:id', function(req, res, next) {
-//     var id = req.params.id
-//     eval(pry.it)
-//     database.raw(
-//       'DELETE FROM foods WHERE id=?',
-//       [id]
-//     ).then(function(food){
-//          res.send('Food deleted')
-//     })
-//   })
-
-
-//   router.put('/:id', function(req, res, next) {
-//     var id = req.params.id
-//     var name = req.body.name
-//     var calories = req.body.calories
-
-//     database('foods')
-//     .where('id', '=', id)
-//     .update({
-//     name: name
-//     }).then(function(food){
-//         res.send('meal updated')
-//    })
-//   })
+})
 
 module.exports = router;
