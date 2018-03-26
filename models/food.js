@@ -14,14 +14,13 @@ var food = {
           }
           else {
             return res.json(food.rows)
-            
           }
       })
     },
+    
     create: function(req,res,next){
         var name = req.body.name
         var calories = req.body.calories
-      
         if(!name || !calories) {
           return res.status(422).send({
             error: "No food provided"
@@ -33,9 +32,9 @@ var food = {
         ).then(function(food) {
             res.status(201).json(food.rows)
         })
-
     },
-    update:function(req,res,next){
+
+    update: function(req,res,next){
         var id = req.params.id
         var name = req.body.name
         var calories = req.body.calories
@@ -49,6 +48,7 @@ var food = {
             res.send('Food updated')
        })
     },
+
     destroy: function(req,res,next){
         var id = req.params.id
         database.raw(
@@ -59,4 +59,5 @@ var food = {
         })
     }
 }
+
 module.exports = food
