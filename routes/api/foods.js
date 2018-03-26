@@ -1,3 +1,4 @@
+var foodsController = require('../../controllers/api/foods_controller.js')
 var express = require('express');
 var router  = express.Router();
 var environment   = process.env.NODE_ENV || 'development'
@@ -19,17 +20,7 @@ router.get('/:id', function(req, res, next) {
   })
 })
 
-router.get('/', function(req, res, next) {
-    database.raw(
-      'SELECT * FROM foods'
-    ).then(function(food) {
-      if(!food.rows) {
-        return res.sendStatus(404)
-      } else {
-        res.json(food.rows)
-      }
-    })
-  })
+router.get('/', foodsController.index)
 
 router.post('/', function(req, res, next) {
   var name = req.body.name
